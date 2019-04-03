@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="margin: 0 auto;width: 800px">
+    <h2>聊天室</h2>
+    <textarea type="text" style="border: 1px solid black;width: 800px;height: 200px;" id="his"></textarea>
+    <input type="text" style="width:740px" id="sendMsg">&nbsp;<button id="send">发送</button>
+</div>
+</body>
+</html>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+
+    $(function () {
+        var ws = new WebSocket("ws://127.0.0.1:2347");
+        var storage = window.localStorage;
+        if(!storage.getItem('name')){
+            var name=prompt("请输入您的名字","");
+            storage.setItem('name',name);
+        }
+       $('#send').click(function () {
+           msg = $('#sendMsg').val();
+           $('#sendMsg').val('');
+           ws.send(storage.getItem('name')+':'+msg);
+       });
+        ws.onopen = function() {
+            $('#his').append("服务器连接成功.....");
+            $('#his').append("\n");
+        };
+        ws.onmessage = function(e) {
+            $('#his').append(e.data);
+            $('#his').append("\n");
+        };
+
+    });
+</script>
